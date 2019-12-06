@@ -1,0 +1,8 @@
+.system-header__container{
+  display: flex;
+  align-items: center;
+  color: #eef;
+}
+.system-header__nav{
+  flex: 1;
+}
