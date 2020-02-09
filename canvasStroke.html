@@ -1,0 +1,147 @@
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Document</title>
+  <style>
+    #canvas{
+      box-sizing: border-box;
+      border: 1px solid #ccc;
+      background: #eee;
+    }
+  </style>
+</head>
+<body>
+  <img src="http://localhost:7001/public/t2016.png" alt="" id="img" crossorigin>
+  <canvas id="canvas" width="2016" height="1024"></canvas>
+
+  <script>
+    const imgUrl = 'http://localhost:3001/t2016.png';
+    const unitSize = 16;
+    const borderColor = [2,40,200,255];
+    const canvasEl = document.getElementById('canvas');
+    const { width: cw, height: ch } = canvasEl;
+    const ctx = canvasEl.getContext('2d');
+  
+    function loadImage(url) {
+      return new Promise((res, rej) => {
+        // const img = new Image();
+        const img = document.getElementById('img');
+        img.onload = () => {
+          res(img);
+        }
+        // img.src = url;
+        // img.crossorigin = "";
+      })
+    }
+
+    loadImage(imgUrl).then(img => {
+      ctx.drawImage(img, 0, 0);
+      const strokeColor = `rgba(${borderColor.slice(0, 3).join(', ')} ,${borderColor[3] / 255})`;
+      console.log(strokeColor);
+      ctx.strokeStyle = `rgba(${borderColor.slice(0, 3).join(', ')} ,${borderColor[3] / 255})`;
+      for (let i = unitSize; i < cw; i += unitSize) {
+        ctx.beginPath();
+        ctx.moveTo(0, i + 0.5);
+        ctx.lineTo(cw, i + 0.5);
+        ctx.closePath();
+        ctx.stroke();
+        
+        ctx.beginPath();
+        ctx.moveTo(i + 0.5, 0);
+        ctx.lineTo(i + 0.5, ch);
+        ctx.closePath();
+        ctx.stroke();
+      }
+
+      const imageData = ctx.getImageData(0, 0, cw, ch);
+      const data = imageData.data;
+      // for (let i = 0; i < imageData.length; i += 4) {
+      //   data[i]     = 255 - data[i];     // red
+      //   data[i + 1] = 255 - data[i + 1]; // green
+      //   data[i + 2] = 255 - data[i + 2]; // blue
+      //   if (data[i + 3] === 0) {
+
+      //   }
+      // }
+      let i = unitSize * 4;
+      while(i < data.length) {
+        if (i < 4 * cw || parseInt(i / (4 * cw)) % unitSize > 0) {
+          if (data[i - 4 + 3] === 0 && data[i + 4 + 3] === 0) { // 左右两边是空白则去掉
+            // for (let j = 0; j < 4; j++) {
+            //   data[i + j] = borderColor[j];
+            // }
+            data[i + 3] = 0;
+          }
+          i += 4 * unitSize;
+        } else {
+          if (
+            (i % unitSize === 0 && data[i - 4 * cw + 3] === 0 && data[i - 4 + 3] === 0 && data[i + 4 * (cw + 1) + 3] === 0) // 上  左  右下
+            ||
+            (data[i - 4 * cw + 3] === 0 && data[i + 4 * cw + 3] === 0)
+          ) {
+            // for (let j = 0; j < 4; j++) {
+            //   data[i + j] = borderColor[j];
+            // }
+            data[i + 3] = 0;
+          }
+          i += 4;
+        }
+      }
+      /*
+      let toUpdateMap = new Map();
+      let i = 0;
+      let lineCapture = false;
+      while(i < data.length) {
+        if (data[i + 3] !== 0) { // 有颜色
+          console.log(i, data[i + 3] !== 0);
+          const t = data[i - 4 * (cw - 1) + 3];
+          const r = data[i + 4 * cw + 4 * unitSize + 3];
+          const b = data[i + 4 * (unitSize * cw + 1) + 3];
+          const l = data[i + 4 * cw - 4 + 3];
+          // toUpdateMap.set(i, [t, r, b, l].map(item => item === 0 || item === undefined));
+          const surround = [t, r, b, l].map(item => item === 0 || item === undefined);
+          fill.call(data, i, surround);
+          lineCapture = true;
+          i += 4 * unitSize;
+        } else {
+          i += 4;
+        }
+        if (i % (4 * cw) === 0 && lineCapture) {
+          lineCapture = false;
+          i += 4 * cw * (unitSize - 1);
+        }
+      }
+      // for (let [start, surround] of toUpdateMap.entries()) {
+      //   fill.call(data, start, surround);
+      // }
+      // console.log(toUpdateMap);
+      */
+      ctx.putImageData(imageData, 0, 0);
+
+      exportImg();
+    })
+
+    function fill(start, surround) {
+      const [t, r ,b ,l] = surround;
+      for (let i = 0; i < unitSize; i++) {
+        for (let j = 0; j < 4; j++) {
+          this[start + (4 * i) + j] = borderColor[j];
+          if (r) this[start + (4 * cw * i) + (4 * (unitSize - 1)) + j] = borderColor[j];
+          if (b) this[start + (4 * (unitSize - 1) * cw) + 4 * (unitSize  - 1 - i) + j] = borderColor[j];
+          this[start + (4 * (unitSize - 1 - i) * cw) + j] = borderColor[j];
+        }
+      }
+    }
+
+    function exportImg() {
+      const aEl = document.createElement('a');
+      aEl.href = canvasEl.toDataURL('image/png');
+      aEl.download = 'test.png';
+      aEl.click();
+    }
+  
+  </script>
+</body>
+</html>

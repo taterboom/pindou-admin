@@ -1,0 +1,18 @@
+.page{
+  &__container{
+    background: #f3f3f3;
+    margin-top: 10px;
+  }
+  &__header{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    height: 58px;
+    background: #fff;
+    padding: 0 10px;
+  }
+  &__content{
+    margin: 20px;
+    background: #fff;
+  }
+}

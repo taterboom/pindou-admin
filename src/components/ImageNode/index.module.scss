@@ -1,0 +1,19 @@
+.image-container{
+  height: 100%;
+  background: #e8e8e8;
+  .image-wrapper{
+    height: 100%;
+    img{
+      height: 100px;
+      width: 100px;
+      &.image--border{
+        border: 1px solid #999;
+        padding: 4px;
+        border-radius: 4px;
+        box-shadow: 0 0 2px #999;
+      }
+    }
+  }
+  .image-name{
+  }
+}

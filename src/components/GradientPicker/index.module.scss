@@ -1,0 +1,40 @@
+$default-width: 240px;
+$indicator-size: 10px;
+
+/* stage */
+.stage{
+  height: 36px;
+  // width: $default-width;
+  border: 1px solid;
+}
+
+/* operation */
+.operation-group{
+  position: relative;
+  // width: $default-width;
+  height: $indicator-size*2;
+  cursor: crosshair;
+}
+.operation-item{
+  position: absolute;
+  top: -$indicator-size/2;
+  width: $indicator-size;
+  height: $indicator-size*2;
+  margin-left: -$indicator-size/2;
+  &__indicator{
+    width: $indicator-size;
+    height: $indicator-size;
+    border: $indicator-size/2 solid;
+    border-color: transparent transparent #535353 transparent;
+    cursor: ew-resize;
+  }
+  &__color-picker{
+
+  }
+  &__trigger{
+    width: $indicator-size;
+    height: $indicator-size;
+    cursor: pointer;
+    border: 1px solid #ccc;
+  }
+}

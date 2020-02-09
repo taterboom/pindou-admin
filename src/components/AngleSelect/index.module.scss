@@ -1,0 +1,40 @@
+.angle-select{
+  width: 80px;
+  height: 80px;
+  border: 1px solid;
+  position: relative;
+  border-radius: 50%;
+  &__origin{
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 4px;
+    height: 4px;
+    border-radius: 50%;
+    background-color: #1890f4;
+  }
+  &__pointer{
+    width: 10px;
+    height: 40px;
+    margin: 0 auto;
+    transform-origin: center bottom 0;
+    overflow: hidden;
+    .indicator{
+      width: 10px;
+      height: 14px;
+      border-style: solid;
+      border-width: 7px 5px 7px 5px;
+      border-color: transparent transparent #1890f4 transparent;
+      margin-top: -7px;
+      // margin-left: -4px;
+      user-select: none;
+    }
+    .body{
+      height: 35px;
+      width: 2px;
+      margin-left: 4px;
+      background-color: #1890f4;
+    }
+  }
+}

@@ -1,0 +1,52 @@
+.grid-stroke{
+  &__container{
+    width: 100%;
+    display: flex;   
+  }
+  &__canvas-container{
+    width: 512px;
+    height: 512px;
+  }
+  &__canvas{
+    width: 512px;
+    height: 512px;
+    overflow: scroll;
+    border: 1px solid;
+  }
+  &__map-container{
+    display: flex;
+    margin-top: 20px;
+  }
+  &__map{
+    width: 200px;
+    height: 200px;
+    border: 1px solid;
+    position: relative;
+    overflow: hidden;
+    margin-left: 50px;
+    img{
+      width: 100%;
+      height: 100%;
+    }
+    &-handler{
+      position: absolute;
+      border: 1px solid;
+    }
+  }
+  &__attr{
+    flex: 1;
+    margin-top: 20px;
+  }
+  @media screen and (max-width: 500px) {
+    &__container{
+     flex-direction: column; 
+    }
+    &__canvas-container{
+      width: 100vw;
+    }
+    &__canvas{
+      width: 100vw;
+      height: 100vw;
+    }
+  }
+}

@@ -1,0 +1,42 @@
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Document</title>
+</head>
+<body>
+  <svg width="1024" height="1024" viewBox="0 0 1024 1024"
+     xmlns="http://www.w3.org/2000/svg" 
+     xmlns:xlink="http://www.w3.org/1999/xlink"> 	 
+     <filter id="colorMeMatrix">
+        <feColorMatrix in="SourceGraphic"
+          type="matrix"
+          values="0 0 0 1 0
+                  0 0 0 1 0
+                  0 0 0 1 0
+                  0 0 0 1 0" />
+      </filter>
+     <defs>
+       <mask id="testmask">
+        <image xlink:href="./tt1024.png" x="0" y="0" height="100%" width="100%" filter="url(#colorMeMatrix)"/>  	
+        <!-- <rect width=></rect> -->
+       </mask>
+       <mask id="img2white">
+        <rect x="0" y="0" width="100%" height="100%" fill="#222"></rect>
+       </mask>
+        <pattern id="smallGrid" width="8" height="8" patternUnits="userSpaceOnUse">
+          <path d="M 8 0 L 0 0 0 8" fill="none" stroke="gray" stroke-width="0.5"/>
+        </pattern>
+        <pattern id="grid" width="80" height="80" patternUnits="userSpaceOnUse">
+          <rect width="80" height="80" fill="url(#smallGrid)"/>
+          <!-- <path d="M 80 0 L 80 80 0 80" fill="none" stroke="gray" stroke-width="1"/> -->
+        </pattern>
+     </defs>		
+    <image id="img" xlink:href="./tt1024.png" x="0" y="0" height="100%" width="100%" />  	
+    <!-- <rect width="50" height="50" fill="#222" mask="url(#testmask)"></rect> -->
+    <rect width="100%" height="100%" fill="url(#smallGrid)"/>
+    <!-- <rect width="100%" height="100%" fill="url(#smallGrid)" mask="url(#testmask)"/> -->
+  </svg>
+</body>
+</html>

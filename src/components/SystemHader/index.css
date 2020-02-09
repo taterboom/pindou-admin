@@ -1,7 +1,14 @@
 .system-header__container{
   display: flex;
   align-items: center;
-  color: #eef;
+  color: #123;
+  background: #fff;
+  box-shadow: 0 0 4px #bbb;
+  padding: 0 10px;
+  transition: box-shadow .6s;
+}
+.system-header__container:hover{
+  box-shadow: 0 0 8px 2px #ddd;
 }
 .system-header__nav{
   flex: 1;

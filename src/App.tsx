@@ -2,9 +2,9 @@ import React from 'react';
 import Main from './views';
 import {Provider} from 'react-redux';
 import store from './store';
-import { ReactQueryConfigProvider } from 'react-query';
+import { ReactQueryConfigProvider, ReactQueryProviderConfig } from 'react-query';
 
-const queryConfig = {
+const queryConfig: ReactQueryProviderConfig = {
   retry: 3,
   retryDelay: (attemptIndex: number) => Math.min(1000 * 2 ** attemptIndex, 30000),
   staleTime: 0,
