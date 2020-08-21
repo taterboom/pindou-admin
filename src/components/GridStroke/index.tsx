@@ -15,7 +15,7 @@ function loadImage(url: string):Promise<HTMLImageElement> {
   })
 }
 
-function getBase64(img: File): Promise<string | null> {
+function getBase64(img: File): Promise<string> {
   return new Promise((res, rej) => {
     const reader = new FileReader();
     reader.addEventListener('load', () => res(reader.result + ''));
@@ -45,8 +45,9 @@ enum DIR {
   LEFT,
 }
 
-function stroke(this: Uint8ClampedArray, start: number, surround: boolean[], rgb: RGB, unitSize: number, size: number, borderWidth: number) {
-  const [t, r ,b , l] = surround;
+function stroke(this: Uint8ClampedArray, start: number, surround: boolean[], surroundEnd: boolean[], rgb: RGB, unitSize: number, size: number, borderWidth: number) {
+  const [tm, rm , bm, lm] = surround;
+  const [te, re , be, le] = surroundEnd;
   const borderColor = rgb2arr(rgb, 255);
   // const borderColor = [22,43,222, 255];
 
@@ -64,23 +65,23 @@ function stroke(this: Uint8ClampedArray, start: number, surround: boolean[], rgb
   //   }
   // }
 
-  if (t) {
-    for (let i = 0; i < (r ? (unitSize + borderWidth) : unitSize); i++) {
+  if (tm) {
+    for (let i = 0; i < ((rm && te) ? (unitSize + borderWidth) : unitSize); i++) {
       strokeBorder.call(this, DIR.TOP, start + (4 * i), borderColor, size, borderWidth);
     }
   }
-  if (r) {
-    for (let i = 0; i < (b ? (unitSize + borderWidth) : unitSize); i++) {
+  if (rm) {
+    for (let i = 0; i < ((bm && re) ? (unitSize + borderWidth) : unitSize); i++) {
       strokeBorder.call(this, DIR.RIGHT, start + (4 * size * i) + (4 * (unitSize)), borderColor, size, borderWidth);
     }
   }
-  if (b) {
-    for (let i = 0; i < (l ? (unitSize + borderWidth) : unitSize); i++) {
+  if (bm) {
+    for (let i = 0; i < ((lm && be) ? (unitSize + borderWidth) : unitSize); i++) {
       strokeBorder.call(this, DIR.BOTTOM, start + (4 * (unitSize) * size) + 4 * (unitSize - i), borderColor, size, borderWidth);
     }
   }
-  if (l) {
-    for (let i = 0; i < (t ? (unitSize + borderWidth) : unitSize); i++) {
+  if (lm) {
+    for (let i = 0; i < ((tm && le) ? (unitSize + borderWidth) : unitSize); i++) {
       strokeBorder.call(this, DIR.LEFT, start + (4 * (unitSize - i) * size), borderColor, size, borderWidth);
     }
   }
@@ -193,7 +194,7 @@ const GridStroke: React.SFC = () => {
   const [modalVis, setModalVis] = useState(false);
   const [imgUrl, setImgUrl] = useState('');
   const [canvasSize, setCanvasSize] = useState(2016);
-  const [imgBase64Url, setImgBase64Url] = useState();
+  const [imgBase64Url, setImgBase64Url] = useState('');
   const [unitSize, setUnitSize] = useState(16);
   const [gridColor, setGridColor] = useState({r: 0, g: 0, b: 0, a: 1});
   const [borderWidth, setborderWidth] = useState(1);
@@ -270,13 +271,18 @@ const GridStroke: React.SFC = () => {
           let j = unitSize * 4;
           while (j < data.length) {
             if (data[j + 4 * (cw * unitSize / 2 + unitSize / 2) + 3] !== 0) { // 有颜色
-              const t = data[j - 4 * (cw - unitSize / 2) + 3];
-              const r = data[j + 4 * (unitSize / 2 * cw + unitSize + 1) + 3];
-              const b = data[j + 4 * ((unitSize + 1) * cw + unitSize / 2) + 3];
-              const l = data[j + 4 * (unitSize / 2 * cw - 1) + 3];
+              const tm = data[j - 4 * (cw - unitSize / 2) + 3]; // 中间
+              const te = data[j - 4 * (cw - unitSize) + 3]; // 末尾
+              const rm = data[j + 4 * (unitSize / 2 * cw + unitSize + 1) + 3];
+              const re = data[j + 4 * (unitSize * cw + unitSize + 1) + 3];
+              const bm = data[j + 4 * ((unitSize + 1) * cw + unitSize / 2) + 3];
+              const be = data[j + 4 * ((unitSize + 1) * cw) + 3];
+              const lm = data[j + 4 * (unitSize / 2 * cw - 1) + 3];
+              const le = data[j + 4 * (cw - 1) + 3];
               // toUpdateMap.set(i, [t, r, b, l].map(item => item === 0 || item === undefined));
-              const surround = [t, r, b, l].map(item => item === 0 || item === undefined);
-              stroke.call(data, j, surround, borderColor, unitSize, cw, borderWidth);
+              const surround = [tm, rm, bm, lm].map(item => item === 0 || item === undefined);
+              const surroundEnd = [te, re, be, le].map(item => item === 0 || item === undefined);
+              stroke.call(data, j, surround, surroundEnd, borderColor, unitSize, cw, borderWidth);
               // break;
             }
             if (j % (4 * cw) === lastGrid) {
