@@ -24,6 +24,8 @@ jobs:
       uses: actions/setup-node@v1
       with:
         node-version: ${{ matrix.node-version }}
+    - name: install sshpass
+      run: apt install sshpass
     - run: npm install
     - run: npm run build --if-present
     - name: tar
@@ -31,6 +33,4 @@ jobs:
         cd build
         tar -cvzf build.tar.gz *
     - name: scp
-      run: |
-        scp -r build.tar.gz root@106.54.48.79:/etc/nginx/html/build.tar.gz
-        Xy89382550
+      run: sshpass -p Xy89382550 scp build.tar.gz root@106.54.48.79:/etc/nginx/html/build.tar.gz
