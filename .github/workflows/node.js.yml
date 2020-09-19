@@ -32,11 +32,5 @@ jobs:
       run: |
         cd build
         tar -cvzf build.tar.gz *
-    - name: scp
-      run: sshpass -p Xy89382550 scp -o StrictHostKeyChecking=no ./build/build.tar.gz root@106.54.48.79:/etc/nginx/html/build.tar.gz
+    - name: scp.gz
     - name: ssh
-      run: |
-        sshpass -p Xy89382550 ssh -o StrictHostKeyChecking=no -tt root@106.54.48.79
-        cd /etc/nginx/html
-        tar -xvzf build.tar.gz
-        rm -f build.tar.gz
